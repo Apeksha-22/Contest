@@ -4,7 +4,7 @@ LeetCode Weekly Contest (Weekly and Biweekly)
 
 GeeksforGeeks Weekly Contests
 
-#📅 Contest Breakdown
+📅 **Contest Breakdown**
 1. LeetCode Weekly Contest
 Weekly Contest: Solutions to LeetCode's weekly coding contest challenges.
 
