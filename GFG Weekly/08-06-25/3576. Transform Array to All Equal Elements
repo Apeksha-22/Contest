@@ -1,0 +1,28 @@
+class Solution {
+public:
+    bool canMakeEqual(vector<int>& arr, int k) {
+        int n = arr.size();
+        int stepsPos = 0, stepsNeg = 0;
+        
+        vector<int> temp = arr;
+        for (int i = 0; i < n - 1; i++) {
+            if (temp[i] == 1) continue;
+            temp[i] = 1;
+            temp[i + 1] *= -1;
+            stepsPos++;
+        }
+        if (temp[n - 1] == -1) stepsPos = -1;
+
+        for (int i = 0; i < n - 1; i++) {
+            if (arr[i] == -1) continue;
+            arr[i] = -1;
+            arr[i + 1] *= -1;
+            stepsNeg++;
+        }
+        if (arr[n - 1] == 1) stepsNeg = -1;
+
+        if (stepsPos == -1 && stepsNeg == -1) return false;
+        if (stepsPos != -1 && stepsNeg != -1) return min(stepsPos, stepsNeg) <= k;
+        return (stepsPos != -1) ? stepsPos <= k : stepsNeg <= k;
+    }
+};
