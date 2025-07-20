@@ -1,0 +1,51 @@
+class Solution {
+public:
+    long long popcountDepth(long long n, int k) {
+        auto q = make_tuple(n, k);
+        if (k == 0) 
+            return n >= 1 ? 1 : 0;
+
+        const int x = 60;
+        vector<int> d(x+1);
+        d[0] = -1; 
+        d[1] = 0;
+        for (int i = 2; i <= x; ++i) {
+            d[i] = 1 + d[__builtin_popcount(i)];
+        }
+        static long long arr[x+1][x+1];
+        for (int i = 0; i <= x; ++i) {
+            arr[i][0] = arr[i][i] = 1;
+            for (int j = 1; j < i; ++j)
+                arr[i][j] = arr[i-1][j-1] + arr[i-1][j];
+        }
+        vector<int> bits;
+        for (long long t = n; t > 0; t >>= 1)
+            bits.push_back(t & 1);
+        reverse(bits.begin(), bits.end());
+        int y = bits.size();
+        auto cnt = [&](int nds) {
+            long long res = 0;
+            int se = 0;
+            for (int i = 0; i < y; ++i) {
+                if (bits[i] == 1) {
+                    int rem = nds - se;
+                    if (rem >= 0 && rem <= y - i - 1)
+                        res += arr[y - i - 1][rem];
+                    se++;
+                }
+            }
+            if (se == nds)
+                res++;
+            return res;
+        };
+
+        long long res = 0;
+        for (int i = 1; i <= x; ++i) {
+            if (d[i] == k - 1)
+                res += cnt(i);
+        }
+        if (k == 1 && n >= 1) 
+            res -= 1;
+        return res;
+    }
+};
