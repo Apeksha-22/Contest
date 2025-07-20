@@ -1,0 +1,22 @@
+class Solution {
+public:
+    long long splitArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<bool> P(n, true);
+        if (n > 0) P[0] = false;
+        if (n > 1) P[1] = false;
+        for (int i = 2; i * i < n; ++i) {
+            if (P[i]) {
+                for (int j = i * i; j < n; j += i)
+                    P[j] = false;
+            }
+        }
+
+        long long sum1 = 0, sum2 = 0;
+        for (int i = 0; i < n; ++i) {
+            if (P[i]) sum1 += nums[i];
+            else sum2 += nums[i];
+        }
+        return llabs(sum1 - sum2);
+    }
+};
