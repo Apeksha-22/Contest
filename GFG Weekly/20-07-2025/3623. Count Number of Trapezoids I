@@ -1,0 +1,24 @@
+static const int MOD = 1e9 + 7;
+static const long long INV2 = (MOD + 1) / 2;
+class Solution {
+public:
+    int countTrapezoids(vector<vector<int>>& points) {
+        unordered_map<int,int>cnt;
+        cnt.reserve(points.size());
+        for(auto& x : points){
+            cnt[x[1]]++;
+        }
+
+        long long sum1 = 0, sum2=0;
+        for(auto& it : cnt){
+            long long c = it.second;
+            if(c<2) continue;
+            long long tl = (long long)((__int128)c * (c - 1) / 2 % MOD);
+            sum1 = sum1+tl%MOD;
+            sum2 = (sum2 + tl * tl % MOD) % MOD;
+        }
+
+        int ans = ((sum1 * sum1) % MOD - sum2 + MOD) % MOD * INV2 % MOD;
+        return ans;
+    }
+};
