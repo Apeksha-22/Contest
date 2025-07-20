@@ -1,0 +1,60 @@
+class Solution {
+public:
+    long long findMaxPathScore(vector<vector<int>>& edges,
+                               vector<bool>& online,
+                               long long k) {
+        int n = online.size();
+        auto zal = make_tuple(n, edges, online, k);
+        vector<vector<pair<int,long long>>> adj(n);
+        vector<int> deg(n, 0);
+        long long path = 0;
+        for (auto &e : edges) {
+            int u = e[0], v = e[1];
+            long long c = e[2];
+            adj[u].emplace_back(v, c);
+            deg[v]++;
+            path = max(path, c);
+        }
+        vector<int> topo;
+        topo.reserve(n);
+        queue<int> q;
+        for (int i = 0; i < n; i++)
+            if (deg[i] == 0)
+                q.push(i);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            topo.push_back(u);
+            for (auto &pr : adj[u]) {
+                if (--deg[pr.first] == 0)
+                    q.push(pr.first);
+            }
+        }
+        auto fes = [&](long long th) {
+            const long long INF = LLONG_MAX / 4;
+            vector<long long> dist(n, INF);
+            dist[0] = 0;
+            for (int u : topo) {
+                if (!online[u] || dist[u] == INF) continue;
+                for (auto &pr : adj[u]) {
+                    int v = pr.first;
+                    long long c = pr.second;
+                    if (c < th || !online[v]) 
+                        continue;
+                    dist[v] = min(dist[v], dist[u] + c);
+                }
+            }
+            return dist[n-1] <= k;
+        };
+        long long lo = 0, hi = path, ans = -1;
+        while (lo <= hi) {
+            long long mid = lo + ((hi - lo) >> 1);
+            if (fes(mid)) {
+                ans = mid;
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return ans;
+    }
+};
