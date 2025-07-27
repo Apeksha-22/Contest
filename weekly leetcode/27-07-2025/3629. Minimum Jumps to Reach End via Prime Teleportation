@@ -1,0 +1,55 @@
+class Solution {
+public:
+    int minJumps(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> mor = nums;
+        int mx = 0;
+        for (int x : mor) if (x > mx) mx = x;
+        
+        vector<int> seq(mx+1);
+        for (int i = 2; i <= mx; ++i)
+            if (!seq[i])
+                for (int j = i; j <= mx; j += i)
+                    if (!seq[j]) seq[j] = i;
+        
+        vector<vector<int>> mp(mx+1);
+        for (int i = 0; i < n; ++i) {
+            int x = mor[i];
+            while (x > 1) {
+                int p = seq[x];
+                mp[p].push_back(i);
+                while (x % p == 0) x /= p;
+            }
+        }
+        
+        vector<int> d(n, -1);
+        vector<char> ups(mx+1);
+        queue<int> q;
+        
+        d[0] = 0;
+        q.push(0);
+        while (!q.empty()) {
+            int i = q.front(); q.pop();
+            int nd = d[i] + 1;
+            if (i == n-1) return d[i];
+            if (i+1 < n && d[i+1] < 0) {
+                d[i+1] = nd;
+                q.push(i+1);
+            }
+            if (i-1 >= 0 && d[i-1] < 0) {
+                d[i-1] = nd;
+                q.push(i-1);
+            }
+            int v = mor[i];
+            if (v > 1 && seq[v] == v && !ups[v]) {
+                for (int j : mp[v]) if (d[j] < 0) {
+                    d[j] = nd;
+                    q.push(j);
+                }
+                ups[v] = 1;
+                mp[v].clear();
+            }
+        }
+        return -1;
+    }
+};
