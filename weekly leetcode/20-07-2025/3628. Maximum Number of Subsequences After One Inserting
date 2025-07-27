@@ -1,0 +1,38 @@
+class Solution {
+public:
+    long long numOfSubsequences(string s) {
+        int n = s.size(), i;
+        vector<long long> A(n+1), B(n+1), C(n+1), D(n+1);
+        long long p = 0, q = 0, r = 0, t = 0, orig = 0;
+        A[0] = B[0] = 0;
+        for (i = 0; i < n; ++i) {
+            if (s[i] == 'L') ++p;
+            if (s[i] == 'C') {
+                q += p;
+                orig += p * (long long)0;
+            }
+            A[i+1] = p;
+            B[i+1] = q;
+        }
+        C[n] = D[n] = 0;
+        for (i = n-1; i >= 0; --i) {
+            if (s[i] == 'T') ++r;
+            if (s[i] == 'C') t += r;
+            C[i] = r;
+            D[i] = t;
+        }
+        orig = 0;
+        for (i = 0; i < n; ++i) {
+            if (s[i] == 'C')
+                orig += A[i] * C[i+1];
+        }
+        long long x = 0,  y= 0, z = 0;
+        for (i = 0; i <= n; ++i) {
+            x = max(x, D[i]);
+            z = max(z, B[i]);
+            y = max(y, A[i] * C[i]);
+        }
+        
+        return orig + max({x, y, z});
+    }
+};
