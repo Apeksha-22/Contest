@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int maxBalancedShipments(vector<int>& weight) {
+        int n = weight.size();
+        int i = 0, cnt = 0;
+        while (i + 1 < n) {
+            if (weight[i] > weight[i + 1]) {
+                cnt++;
+                i += 2;
+            } else
+                i++;
+        }
+        return cnt;
+    }
+};
