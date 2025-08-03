@@ -1,0 +1,52 @@
+class Solution {
+    using ll = long long;
+
+public:
+    int earliestFinishTime(vector<int>& landStartTime,
+                           vector<int>& landDuration,
+                           vector<int>& waterStartTime,
+                           vector<int>& waterDuration) {
+        int n = landStartTime.size(), m = waterStartTime.size();
+        ll ans = LLONG_MAX;
+        auto func = [&](const vector<ll>& ast, const vector<ll>& adu,
+                        const vector<ll>& bst, const vector<ll>& bdu) {
+            int xn = ast.size(), yn = bst.size();
+            vector<ll> xf(xn);
+            for (int i = 0; i < xn; ++i)
+                xf[i] = ast[i] + adu[i];
+            sort(xf.begin(), xf.end());
+            vector<pair<ll, ll>> yp(yn);
+            for (int i = 0; i < yn; ++i)
+                yp[i] = {bst[i], bdu[i]};
+            sort(yp.begin(), yp.end());
+            vector<ll> p(yn), s(yn);
+            p[0] = yp[0].second;
+            for (int i = 1; i < yn; ++i)
+                p[i] = min(p[i - 1], yp[i].second);
+            s[yn - 1] = yp[yn - 1].first + yp[yn - 1].second;
+            for (int i = yn - 2; i >= 0; --i)
+                s[i] = min(s[i + 1], yp[i].first + yp[i].second);
+            ll best = LLONG_MAX;
+            for (ll t : xf) {
+                int j =
+                    lower_bound(
+                        yp.begin(), yp.end(), pair<ll, ll>{t, LLONG_MIN},
+                        [](auto& u, auto& v) { return u.first < v.first; }) -
+                    yp.begin();
+                if (j > 0)
+                    best = min(best, t + p[j - 1]);
+                if (j < yn)
+                    best = min(best, s[j]);
+            }
+            return best;
+        };
+        vector<ll> ast(n), adu(n), bst(m), bdu(m);
+        for (int i = 0; i < n; ++i)
+            ast[i] = landStartTime[i], adu[i] = landDuration[i];
+        for (int j = 0; j < m; ++j)
+            bst[j] = waterStartTime[j], bdu[j] = waterDuration[j];
+        ans = min(ans, func(ast, adu, bst, bdu));
+        ans = min(ans, func(bst, bdu, ast, adu));
+        return int(ans);
+    }
+};
