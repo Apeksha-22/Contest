@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int minTime(string s, vector<int>& order, int k) {
+        string tem = s;
+        int n = s.size();
+        auto cntVld = [&](int t) {
+            vector<bool> mrk(n);
+            for (int i = 0; i <= t; ++i)
+                mrk[order[i]] = true;
+            long long x = 0, len = 0;
+            for (int i = 0; i < n; ++i) {
+                if (!mrk[i])
+                    ++len;
+                else {
+                    x += len * (len + 1LL) / 2;
+                    len = 0;
+                }
+            }
+            x += len * (len + 1LL) / 2;
+            long long tl = 1LL * n * (n + 1) / 2;
+            return tl - x;
+        };
+        int l = 0, r = n - 1, ans = -1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (cntVld(mid) >= k) {
+                ans = mid;
+                r = mid - 1;
+            } else
+                l = mid + 1;
+        }
+        return ans;
+    }
+};
