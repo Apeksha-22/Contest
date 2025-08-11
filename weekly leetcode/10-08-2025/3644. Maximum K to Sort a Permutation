@@ -1,0 +1,99 @@
+struct DSU {
+    vector<int> p;
+    DSU(int n) {
+        p.resize(n);
+        iota(p.begin(), p.end(), 0);
+    }
+    int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }
+    void unite(int a, int b) {
+        a = find(a), b = find(b);
+        if (a != b)
+            p[b] = a;
+    }
+};
+
+class Solution {
+public:
+    int sortPermutation(vector<int>& nums) {
+        int n = nums.size();
+
+        bool srt = true;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i) {
+                srt = false;
+                break;
+            }
+        }
+        if (srt)
+            return 0;
+
+        vector<int> pos(n);
+        for (int i = 0; i < n; i++)
+            pos[nums[i]] = i;
+
+        int mxvl = n - 1;
+        int B = 0;
+        while ((1 << B) <= mxvl)
+            B++;
+        if (B == 0)
+            B = 1;
+        int tsk = (1 << B) - 1;
+
+        int cur = 0;
+        for (int j = B - 1; j >= 0; j--) {
+            int tryk = cur | (1 << j);
+            if (feasible(tryk, n, pos, B, tsk))
+                cur = tryk;
+        }
+        return cur;
+    }
+
+private:
+    bool feasible(int k, int n, const vector<int>& pos, int B, int tsk) {
+        vector<int> inV(n, 0), vals;
+        vals.reserve(n);
+        for (int v = 0; v < n; v++) {
+            if ((v & k) == k) {
+                inV[v] = 1;
+                vals.push_back(v);
+            } else {
+                if (pos[v] != v)
+                    return false;
+            }
+        }
+        if (vals.empty())
+            return true;
+        int s = 1 << B;
+        vector<vector<int>> bkt(s);
+        for (int v : vals) {
+            int r = v & (~k) & tsk;
+            bkt[r].push_back(v);
+        }
+
+        DSU dsu(n);
+        for (int v : vals) {
+            int rv = v & (~k) & tsk;
+            int cmp = (~rv) & tsk;
+            int sb = cmp;
+            while (true) {
+                if (!bkt[sb].empty()) {
+                    for (int u : bkt[sb])
+                        dsu.unite(v, u);
+                    bkt[sb].clear(); // Avoid re-processing
+                }
+                if (sb == 0)
+                    break;
+                sb = (sb - 1) & cmp;
+            }
+        }
+
+        for (int v : vals) {
+            int tar = pos[v];
+            if ((tar & k) != k)
+                return false;
+            if (dsu.find(v) != dsu.find(tar))
+                return false;
+        }
+        return true;
+    }
+};
