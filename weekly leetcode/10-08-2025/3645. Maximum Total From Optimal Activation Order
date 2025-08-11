@@ -1,0 +1,66 @@
+class Solution {
+public:
+    long long maxTotal(vector<int>& value, vector<int>& limit) {
+        int n = value.size();
+        vector<pair<int,int>> lqd;
+        lqd.reserve(n);
+        for (int i = 0; i < n; ++i) lqd.emplace_back(value[i], limit[i]);
+
+        int mxl = n;
+        vector<priority_queue<pair<int,int>>> pq(mxl + 1);
+        for (int i = 0; i < n; ++i) {
+            int v = lqd[i].first;
+            int l = lqd[i].second;
+            pq[l].push({v, i});
+        }
+
+        set<int> av;
+        for (int l = 1; l <= mxl; ++l) if (!pq[l].empty()) av.insert(l);
+
+        set<int> al;
+        vector<int> ac(mxl + 1, 0);
+        vector<char> act(n, 0);
+
+        long long ans = 0;
+        int cur = 0;
+
+        while (true) {
+            auto it = av.upper_bound(cur);
+            if (it == av.end()) break;
+            int L = *it;
+            auto &heap = pq[L];
+            while (!heap.empty() && act[heap.top().second]) heap.pop();
+            if (heap.empty()) { av.erase(it); continue; }
+            auto pr = heap.top(); heap.pop();
+            int idx = pr.second;
+            int val = pr.first;
+            act[idx] = 1;
+            ans += val;
+            cur += 1;
+            ac[L] += 1;
+            if (ac[L] == 1) al.insert(L);
+            if (heap.empty()) av.erase(L);
+            while (!av.empty()) {
+                auto it2 = av.begin();
+                if (*it2 <= cur) {
+                    int s = *it2;
+                    av.erase(it2);
+                    while (!pq[s].empty()) pq[s].pop();
+                } else break;
+            }
+            int rem = 0;
+            while (!al.empty()) {
+                auto it3 = al.begin();
+                if (*it3 <= cur) {
+                    int s = *it3;
+                    rem += ac[s];
+                    ac[s] = 0;
+                    al.erase(it3);
+                } else break;
+            }
+            cur -= rem;
+        }
+
+        return ans;
+    }
+};
