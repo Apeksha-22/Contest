@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int xorAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+        const long long MOD = 1e9 + 7;
+        vector<int> temp = nums;
+        int n = nums.size();
+        for (auto& q : queries) {
+            int a = q[0], b = q[1], c = q[2], d = q[3];
+            for (int idx = a; idx <= b; idx += c)
+                nums[idx] = int((nums[idx] * 1LL * d) % MOD);
+        }
+        int ans = 0;
+        for (int x : nums)
+            ans ^= x;
+        return ans;
+    }
+};
