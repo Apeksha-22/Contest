@@ -1,0 +1,21 @@
+ class Solution {
+public:
+    long long minArraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> temp = nums;
+        const long long INF = (1LL<<60);
+        vector<long long> tmp(k, INF);
+        long long prf = 0;
+        vector<long long> dp(n+1, INF);
+        dp[0] = 0;
+        tmp[0] = 0;
+        for (int i = 0; i < n; ++i) {
+            prf = (prf + nums[i]) % k;
+            long long x = dp[i] + nums[i];
+            long long y = tmp[prf];
+            dp[i+1] = min(x, y);
+            tmp[prf] = min(tmp[prf], dp[i+1]);
+        }
+        return dp[n];
+    }
+};
