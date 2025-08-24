@@ -1,0 +1,14 @@
+class Solution {
+public:
+    bool partitionArray(vector<int>& nums, int k) {
+        int n = nums.size();
+        if (n % k != 0) return false;
+        int a = n / k;
+        unordered_map<int,int> cnt;
+        cnt.reserve(nums.size()*2);
+        for (int x : nums) {
+            if (++cnt[x] > a) return false;
+        }
+        return true;
+    }
+};
