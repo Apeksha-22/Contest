@@ -1,0 +1,82 @@
+struct DSU {
+    vector<int> arr, sz;
+    DSU(int n = 0) {
+        arr.resize(n);
+        sz.assign(n, 1);
+        for (int i = 0; i < n; i++)
+            arr[i] = i;
+    }
+    int find(int x) { return arr[x] == x ? x : arr[x] = find(arr[x]); }
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a == b)
+            return;
+        if (sz[a] < sz[b])
+            swap(a, b);
+        arr[b] = a;
+        sz[a] += sz[b];
+    }
+};
+
+class Solution {
+public:
+    vector<int> maxValue(vector<int>& nums) {
+        int n = nums.size();
+        DSU dsu(n);
+        vector<int> cpy = nums;
+
+        {
+            vector<int> st;
+            st.reserve(n);
+            for (int i = 0; i < n; ++i) {
+                while (!st.empty() && nums[st.back()] <= nums[i])
+                    st.pop_back();
+                if (!st.empty())
+                    dsu.unite(st.back(), i);
+                st.push_back(i);
+            }
+        }
+
+        {
+            vector<int> st;
+            st.reserve(n);
+            for (int i = n - 1; i >= 0; --i) {
+                while (!st.empty() && nums[st.back()] >= nums[i])
+                    st.pop_back();
+                if (!st.empty())
+                    dsu.unite(st.back(), i);
+                st.push_back(i);
+            }
+        }
+
+        vector<int> cpy2 = nums;
+
+        vector<int> temp(n, INT_MIN);
+        for (int i = 0; i < n; ++i) {
+            int j = dsu.find(i);
+            temp[j] = max(temp[j], nums[i]);
+        }
+
+        vector<int> res(n);
+        for (int i = 0; i < n; ++i)
+            res[i] = temp[dsu.find(i)];
+
+        vector<int> suf(n);
+        suf[n - 1] = nums[n - 1];
+        for (int i = n - 2; i >= 0; --i) suf[i] = min(suf[i + 1], nums[i]);
+
+        int i = 0;
+        while (i < n) {
+            int cur = nums[i];
+            int j = i;
+            while (j < n - 1 && !(cur <= suf[j + 1])) {
+                ++j;
+                if (nums[j] > cur) cur = nums[j];
+            }
+            for (int k = i; k <= j; ++k) res[k] = cur;
+            i = j + 1;
+        }
+        return res;
+    }
+};
