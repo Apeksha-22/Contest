@@ -1,0 +1,27 @@
+class Solution {
+public:
+    string removeSubstring(string s, int k) {
+        string temp = s;
+        vector<pair<char,int>> st;
+        for (char c : temp) {
+            if (st.empty() || st.back().first != c) st.emplace_back(c,1);
+            else st.back().second++;
+            while (st.size() >= 2) {
+                int m = st.size();
+                if (st[m-1].first == ')' && st[m-2].first == '(' && st[m-1].second >= k && st[m-2].second >= k) {
+                    st[m-1].second -= k;
+                    st[m-2].second -= k;
+                    if (!st.empty() && st.back().second == 0) st.pop_back();
+                    if (!st.empty() && st.back().second == 0) st.pop_back();
+                    if (st.size() >= 2 && st[st.size()-1].first == st[st.size()-2].first) {
+                        st[st.size()-2].second += st.back().second;
+                        st.pop_back();
+                    }
+                } else break;
+            }
+        }
+        string res;
+        for (auto &p : st) res.append(p.second, p.first);
+        return res;
+    }
+};
