@@ -1,0 +1,19 @@
+class ExamTracker {
+public:
+    vector<int> t;
+    vector<long long> p;
+    ExamTracker() {}
+    void record(int time, int score) {
+        pair<int,int> temp = {time, score};
+        t.push_back(temp.first);
+        if (p.empty()) p.push_back(temp.second);
+        else p.push_back(p.back() + temp.second);
+    }
+    long long totalScore(int startTime, int endTime) {
+        pair<int,int> temp = {startTime, endTime};
+        int l = lower_bound(t.begin(), t.end(), temp.first) - t.begin();
+        int r = upper_bound(t.begin(), t.end(), temp.second) - t.begin() - 1;
+        if (l > r) return 0;
+        return p[r] - (l ? p[l-1] : 0);
+    }
+};
