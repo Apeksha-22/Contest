@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int n = nums.size();
+        if (n < 3) return n;
+        int ans = 2, cur = 2;
+        vector<int> temp = nums;
+        for (int i = 2; i < n; ++i) {
+            if ((long long)temp[i] == (long long)temp[i-1] + temp[i-2]) ++cur;
+            else cur = 2;
+            if (cur > ans) ans = cur;
+        }
+        return ans;
+    }
+};
