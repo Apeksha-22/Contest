@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int sumDivisibleByK(vector<int>& nums, int k) {
+        vector<int> c(101);
+        for (int x : nums)
+            c[x]++;
+        int s = 0;
+        for (int v = 1; v <= 100; ++v)
+            if (c[v] && c[v] % k == 0)
+                s += v * c[v];
+        return s;
+    }
+};
