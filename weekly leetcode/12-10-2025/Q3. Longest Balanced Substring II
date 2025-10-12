@@ -1,0 +1,70 @@
+class Solution {
+public:
+    int longestBalanced(string s) {
+        int n = s.size();
+        string temp = s;
+        if (n == 0)
+            return 0;
+        int ans = 1;
+        int r = 1;
+        for (int i = 1; i < n; ++i) {
+            if (s[i] == s[i - 1])
+                ++r;
+            else
+                r = 1;
+            ans = max(ans, r);
+        }
+        vector<char> arr = {'a', 'b', 'c'};
+        for (int p = 0; p < 3; ++p) {
+            for (int q = p + 1; q < 3; ++q) {
+                char x = arr[p], y = arr[q];
+                int i = 0;
+                while (i < n) {
+                    while (i < n && s[i] != x && s[i] != y)
+                        ++i;
+                    int st = i;
+                    while (i < n && (s[i] == x || s[i] == y))
+                        ++i;
+                    int ed = i - 1;
+                    if (st <= ed) {
+                        unordered_map<int, int> mp;
+                        mp[0] = st - 1;
+                        int diff = 0;
+                        for (int j = st; j <= ed; ++j) {
+                            diff += (s[j] == x) ? 1 : -1;
+                            auto it = mp.find(diff);
+                            if (it != mp.end())
+                                ans = max(ans, j - it->second);
+                            else
+                                mp[diff] = j;
+                        }
+                    }
+                }
+            }
+        }
+        const int OFF = 1 << 17;
+        const int SH = 18;
+        unordered_map<long long, int> mp2;
+        mp2.reserve(n * 2);
+        int A = 0, B = 0, C = 0;
+        long long ky = ((long long)(0 + OFF) << SH) | (0 + OFF);
+        mp2[ky] = -1;
+        for (int j = 0; j < n; ++j) {
+            if (s[j] == 'a')
+                ++A;
+            else if (s[j] == 'b')
+                ++B;
+            else
+                ++C;
+            int d1 = A - B;
+            int d2 = A - C;
+            long long k = ((long long)(d1 + OFF) << SH) | (d2 + OFF);
+            auto it = mp2.find(k);
+            if (it != mp2.end())
+                ans = max(ans, j - it->second);
+            else
+                mp2[k] = j;
+        }
+        return ans;
+    }
+};
