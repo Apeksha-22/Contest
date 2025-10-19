@@ -1,0 +1,48 @@
+class Solution {
+public:
+    string lexGreaterPermutation(string s, string target) {
+        int len = s.size();
+        vector<int> cnt(26, 0);
+        for (char c : s)
+            cnt[c - 'a']++;
+        string temp = s;
+        return dfs(0, len, cnt, target);
+    }
+
+private:
+    string dfs(int i, int len, vector<int>& cnt, const string& target) {
+        if (i == len)
+            return "";
+        for (char ch = target[i]; ch <= 'z'; ++ch) {
+            int idx = ch - 'a';
+            if (cnt[idx] == 0)
+                continue;
+            if (ch == target[i]) {
+                cnt[idx]--;
+                string temp;
+                temp.reserve(len - i - 1);
+                for (int k = 25; k >= 0; --k)
+                    temp.append(cnt[k], char('a' + k));
+                if (temp <= target.substr(i + 1)) {
+                    cnt[idx]++;
+                    continue;
+                }
+                string suf = dfs(i + 1, len, cnt, target);
+                if (!suf.empty()) {
+                    cnt[idx]++;
+                    return string(1, ch) + suf;
+                }
+                cnt[idx]++;
+            } else {
+                cnt[idx]--;
+                string tl;
+                tl.reserve(len - i - 1);
+                for (int k = 0; k < 26; ++k)
+                    tl.append(cnt[k], char('a' + k));
+                cnt[idx]++;
+                return string(1, ch) + tl;
+            }
+        }
+        return "";
+    }
+};
