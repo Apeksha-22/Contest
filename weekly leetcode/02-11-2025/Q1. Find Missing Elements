@@ -1,0 +1,15 @@
+class Solution {
+public:
+    vector<int> findMissingElements(vector<int>& nums) {
+        int lo = *min_element(nums.begin(), nums.end());
+        int hi = *max_element(nums.begin(), nums.end());
+        vector<char> pres(hi - lo + 1, 0);
+        for (int x : nums)
+            pres[x - lo] = 1;
+        vector<int> ans;
+        for (int v = lo; v <= hi; ++v)
+            if (!pres[v - lo])
+                ans.push_back(v);
+        return ans;
+    }
+};
