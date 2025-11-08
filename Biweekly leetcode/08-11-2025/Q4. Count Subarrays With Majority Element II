@@ -1,0 +1,36 @@
+class Solution {
+public:
+    long long countMajoritySubarrays(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<long long> pre(n + 1);
+        pre[0] = 0;
+        for (int i = 0; i < n; ++i)
+            pre[i + 1] = pre[i] + (nums[i] == target ? 1 : -1);
+        vector<long long> val(pre.begin(), pre.end());
+        sort(val.begin(), val.end());
+        val.erase(unique(val.begin(), val.end()), val.end());
+        int m = val.size();
+        vector<int> bit(m + 2, 0);
+        auto idx = [&](long long x) {
+            return int(lower_bound(val.begin(), val.end(), x)
+            - val.begin() + 1);
+        };
+        auto upd = [&](int i) {
+            for (; i <= m; i += i & -i)
+                ++bit[i];
+        };
+        auto qry = [&](int i) {
+            int s = 0;
+            for (; i > 0; i -= i & -i)
+                s += bit[i];
+            return s;
+        };
+        long long ans = 0;
+        for (int j = 0; j <= n; ++j) {
+            int r = idx(pre[j]);
+            ans += qry(r - 1);
+            upd(r);
+        }
+        return ans;
+    }
+};
