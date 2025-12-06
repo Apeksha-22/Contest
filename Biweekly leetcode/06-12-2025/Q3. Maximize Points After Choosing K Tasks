@@ -1,0 +1,28 @@
+class Solution {
+public:
+    long long maxPoints(vector<int>& technique1, vector<int>& technique2, int k) {
+       int n = technique1.size();
+        vector<pair<long long, int>>dif(n);
+        for(int i=0; i<n; i++){
+            dif[i] = {
+                (long long)technique1[i] - technique2[i], i
+            };
+        }
+
+        sort(dif.begin(), dif.end(), greater<pair<long long, int>>());
+
+        long long ans = 0;
+        vector<char>use(n,0);
+
+        for(int i=0; i<k; i++){
+            int idx = dif[i].second;
+            use[idx] = 1;
+            ans += technique1[idx];
+        }
+
+        for(int i=0; i<n; i++){
+            if(!use[i]) ans += max(technique1[i], technique2[i]);
+        }
+        return ans;
+    }
+};©leetcode
