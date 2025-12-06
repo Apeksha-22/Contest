@@ -1,0 +1,44 @@
+class Solution {
+public:
+    vector<int> minOperations(vector<int>& nums) {
+        vector<int> tmp = nums;
+        int n = nums.size();
+        vector<int> res(n);
+        for(int i = 0; i < n; i++){
+            int x = nums[i];
+            if(isPal(x)){
+                res[i] = 0;
+                continue;
+            }
+            for(int d = 1; ; d++){
+                int k = x - d;
+                if(k >= 1 && isPal(k)){
+                    res[i] = d;
+                    break;
+                }
+                int up = x + d;
+                if(isPal(up)){
+                    res[i] = d;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+private:
+    bool isPal(int x){
+        string s;
+        while(x > 0){
+            s.push_back(char('0' + (x & 1)));
+            x >>= 1;
+        }
+        int i = 0, j = (int)s.size() - 1;
+        while(i < j){
+            if(s[i] != s[j]) return false;
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
+©leetcode
