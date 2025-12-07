@@ -1,0 +1,62 @@
+class Solution {
+public:
+    long long totalScore(int hp, vector<int>& damage, vector<int>& requirement) {
+
+        int n = damage.size();
+
+        vector<long long> pref(n + 1, 0);
+        for(int i = 1; i <= n; i++){
+            pref[i] = pref[i - 1] + damage[i - 1];
+        }
+
+        vector<long long> comp = pref;
+        sort(comp.begin(), comp.end());
+        comp.erase(unique(comp.begin(), comp.end()), comp.end());
+
+        auto indexOf = [&](long long val){
+            return (int)(lower_bound(comp.begin(), comp.end(), val) - comp.begin()) + 1;
+        };
+
+        struct Fenwick {
+            int size;
+            vector<int> bit;
+
+            Fenwick(int size): size(size), bit(size + 1, 0) {}
+
+            void add(int pos, int v){
+                while(pos <= size){
+                    bit[pos] += v;
+                    pos += pos & -pos;
+                }
+            }
+            int sum(int pos){
+                int s = 0;
+                while(pos > 0){
+                    s += bit[pos];
+                    pos -= pos & -pos;
+                }
+                return s;
+            }
+        };
+
+        int m = comp.size();
+        Fenwick fen(m);
+
+        fen.add(indexOf(pref[0]), 1);
+
+        long long res = 0;
+
+        for(int i = 1; i <= n; i++){
+            long long nd = pref[i] - (hp - requirement[i - 1]);
+            int pos = lower_bound(comp.begin(), comp.end(), nd) - comp.begin() + 1;
+
+            if(pos <= m){
+                res += fen.sum(m) - fen.sum(pos - 1);
+            }
+
+            fen.add(indexOf(pref[i]), 1);
+        }
+
+        return res;
+    }
+};
