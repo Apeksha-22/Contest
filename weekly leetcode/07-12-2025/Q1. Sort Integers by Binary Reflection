@@ -1,0 +1,22 @@
+class Solution {
+public:
+    long long reflect(int x) {
+        long long rev = 0;
+        while (x > 0) {
+            rev = (rev << 1) | (x & 1);
+            x >>= 1;
+        }
+        return rev;
+    }
+
+    vector<int> sortByReflection(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), [&](int a, int b) {
+            long long ra = reflect(a);
+            long long rb = reflect(b);
+            if (ra != rb)
+                return ra < rb;
+            return a < b;
+        });
+        return nums;
+    }
+};
