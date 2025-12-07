@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int largestPrime(int n) {
+      if (n < 2) return 0;
+        
+        vector<bool> isp(n + 1, true);
+        isp[0] = false;
+        if (n >= 1) isp[1] = false;
+        for (int i = 2; i * i <= n; ++i) {
+            if (isp[i]) {
+                for (int j = i * i; j <= n; j += i) {
+                    isp[j] = false;
+                }
+            }
+        }
+        
+        vector<int> prms;
+        for (int i = 2; i <= n; ++i) {
+            if (isp[i]) prms.push_back(i);
+        }
+        
+        long long sum = 0;
+        int ans = 0;
+        for (int val : prms) {
+            sum += val;
+            if (sum > n) break;
+            if (isp[sum]) ans = (int)sum;
+        }
+        
+        return ans;  
+    }
+};
