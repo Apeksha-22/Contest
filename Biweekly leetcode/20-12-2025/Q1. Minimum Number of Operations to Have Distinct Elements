@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int n=nums.size();
+        vector<bool>uni(n,false);
+        unordered_set<int>s;
+        bool isun=true;
+        for(int i=n-1; i>=0; i--){
+            if(s.count(nums[i])) isun=false;
+            s.insert(nums[i]);
+            uni[i] = isun;
+        }
+        int cnt=0;
+        int i=0;
+        while(i<n && !uni[i]){
+            cnt++;
+            i+=3;
+        }
+        return cnt;
+    }
+};
