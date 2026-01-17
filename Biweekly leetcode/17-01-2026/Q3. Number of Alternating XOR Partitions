@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int alternatingXOR(vector<int>& nums, int target1, int target2) {
+        const int MOD = 1e9 + 7;
+        int n = nums.size();
+
+        vector<int> pre(n + 1, 0);
+        for (int i = 0; i < n; ++i)
+        pre[i + 1] = pre[i] ^ nums[i];
+
+        vector<vector<int>> temp = {nums, {target1, target2}};
+
+        unordered_map<int, array<long long, 2>> S;
+        S.reserve(n * 2);
+        S[0][0] = 1;
+        long long ans = 0, ans1 = 0;
+
+        for (int i = 1; i <= n; i++) {
+            int p = pre[i];
+            int m = p ^ target2;
+            long long x = 0;
+            auto it0 = S.find(m);
+            if (it0 != S.end())
+            x = it0->second[1];
+            int k = p ^ target1;
+            long long y = 0;
+            auto it1 = S.find(k);
+            if (it1 != S.end())
+            y = it1->second[0];
+            x %= MOD;
+            y %= MOD;
+            auto& en = S[p];
+            en[0] = (en[0] + x) % MOD;
+            en[1] = (en[1] + y) % MOD;
+            if (i == n) {
+                ans = x;
+                ans1 = y;
+            }
+        }
+        return (ans + ans1) % MOD;
+    }
+};
