@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> bestTower(vector<vector<int>>& towers, vector<int>& center,
+                          int radius) {
+        int cx = center[0], cy = center[1];
+        int Q = -1;
+        vector<int> res = {-1, -1};
+
+        for (const auto& t : towers) {
+            int x = t[0], y = t[1], z = t[2];
+            long long dist = llabs((long long)x - cx) + llabs((long long)y - cy);
+            if (dist <= radius) {
+                if (z > Q ||
+                    (z == Q && (res[0] == -1 || x < res[0] ||
+                                    (x == res[0] && y < res[1])))) {
+                    Q = z;
+                    res = {x, y};
+                }
+            }
+        }
+        return res;
+    }
+};
