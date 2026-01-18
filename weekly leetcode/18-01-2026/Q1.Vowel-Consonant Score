@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int vowelConsonantScore(string s) {
+        int v = 0, c = 0;
+        auto isVowel = [](char ch) {
+            return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+        };
+
+        for (char ch : s) {
+            if (isalpha(static_cast<unsigned char>(ch))) {
+                if (isVowel(ch))
+                    ++v;
+                else
+                    ++c;
+            }
+        }
+        return (c > 0) ? (v / c) : 0;
+    }
+};
