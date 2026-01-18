@@ -1,0 +1,52 @@
+class AuctionSystem {
+private:
+    unordered_map<int, unordered_map<int,int>> mp;
+    unordered_map<int, set<pair<long long,int>>> mp2;
+
+public:
+    AuctionSystem() {
+    }
+
+    void addBid(int userId, int itemId, int bidAmount) {
+        if (mp[itemId].count(userId)) {
+            int x = mp[itemId][userId];
+            mp2[itemId].erase({-x, -userId});
+        }
+        mp[itemId][userId] = bidAmount;
+        mp2[itemId].insert({-static_cast<long long>(bidAmount), -userId});
+    }
+
+    void updateBid(int userId, int itemId, int newAmount) {
+        // guaranteed to exist
+        int y = mp[itemId][userId];
+        mp2[itemId].erase({-y, -userId});
+
+        mp[itemId][userId] = newAmount;
+        mp2[itemId].insert({-static_cast<long long>(newAmount), -userId});
+    }
+
+    void removeBid(int userId, int itemId) {
+        // guaranteed to exist
+        int z = mp[itemId][userId];
+        mp2[itemId].erase({-z, -userId});
+        mp[itemId].erase(userId);
+        if (mp[itemId].empty()) {
+            mp.erase(itemId);
+            mp2.erase(itemId);
+        }
+    }
+
+    int getHighestBidder(int itemId) {
+        if (!mp2.count(itemId) || mp2[itemId].empty()) return -1;
+        return -mp2[itemId].begin()->second;
+    }
+};
+
+/**
+ * Your AuctionSystem object will be instantiated and called as such:
+ * AuctionSystem* obj = new AuctionSystem();
+ * obj->addBid(userId,itemId,bidAmount);
+ * obj->updateBid(userId,itemId,newAmount);
+ * obj->removeBid(userId,itemId);
+ * int param_4 = obj->getHighestBidder(itemId);
+ */
