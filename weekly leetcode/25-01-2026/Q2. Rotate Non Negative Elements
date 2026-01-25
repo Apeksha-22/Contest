@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> rotateElements(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> tem;
+        vector<int> idx;
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] >= 0) {
+                tem.push_back(nums[i]);
+                idx.push_back(i);
+            }
+        }
+        int m = tem.size();
+        if (m == 0)
+            return nums;
+        int x = k % m;
+        vector<int> rot(m);
+        for (int i = 0; i < m; ++i)
+        rot[i] = tem[(i + x) % m];
+        vector<int> temp = nums;
+        for (int i = 0; i < m; ++i)
+        nums[idx[i]] = rot[i];
+        (void)temp;
+        return nums;
+    }
+};
