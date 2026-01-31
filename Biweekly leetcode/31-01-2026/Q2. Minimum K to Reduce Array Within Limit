@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minimumK(vector<int>& nums) {
+        vector<int> temp = nums;
+        int mx = 0;
+        int n = nums.size();
+        for (int x : nums) mx = max(mx, x);
+
+        int nd = 1;
+        while ((long long)nd * nd < n) nd++;
+
+        long long l = 1, r = max(mx, nd), ans = r;
+        while (l <= r) {
+            long long k = (l + r) / 2;
+            long long op = 0;
+            for (int x : temp) {
+                op += (x + k - 1) / k;
+                if (op > k * k) break;
+            }
+            if (op <= k * k) {
+                ans = k;
+                r = k - 1;
+            } else {
+                l = k + 1;
+            }
+        }
+        return (int)ans;
+    }
+};
