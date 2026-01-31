@@ -1,0 +1,24 @@
+class Solution {
+public:
+    string reverseByType(string s) {
+        string le = "";
+        string sp = "";
+        for (char c : s) {
+            if (c >= 'a' && c <= 'z')
+            le.push_back(c);
+            else
+            sp.push_back(c);
+        }
+        reverse(le.begin(), le.end());
+        reverse(sp.begin(), sp.end());
+        int i = 0, j = 0;
+        for (char &c : s) {
+            if (c >= 'a' && c <= 'z')
+                c = le[i++];
+            else
+                c = sp[j++];
+        }
+
+        return s;
+    }
+};
