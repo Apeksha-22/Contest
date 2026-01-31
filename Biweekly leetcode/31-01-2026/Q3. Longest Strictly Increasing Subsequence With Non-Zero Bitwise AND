@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int longestSubsequence(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 0)
+        return 0;
+        vector<int> temp = nums;
+        int res = 0;
+        for (int i = 0; i <= 30; ++i) {
+            vector<int> arr;
+            arr.reserve(n);
+            for (int x : temp) {
+                if ((x >> i) & 1) {
+                    auto it = lower_bound(arr.begin(), arr.end(), x);
+                    if (it == arr.end())
+                        arr.push_back(x);
+                    else
+                        *it = x;
+                }
+            }
+            res = max(res, (int)arr.size());
+        }
+        return res;
+    }
+};
