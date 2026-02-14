@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int prefixConnected(vector<string>& words, int k) {
+        auto temp = words;
+        unordered_map<string, int>freq;
+        for(string &s : temp){
+            if((int)s.size()<k)continue;
+            string pre = s.substr(0,k);
+            freq[pre]++;
+        }
+        int grp = 0;
+        for(auto &x : freq)
+            if(x.second >= 2)grp++;
+
+        return grp;
+    }
+};©leetcode
