@@ -10,7 +10,7 @@ public:
         for (auto &p : freq)
         cnt[p.second]++;
         
-        for (int x : nums) {
+        for (int x : nums)
         if (cnt[freq[x]] == 1)
         return x;
         
