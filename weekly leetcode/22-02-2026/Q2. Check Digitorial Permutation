@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool isDigitorialPermutation(int n) {
+        string str = to_string(n);
+        vector<int> f1(10, 0);
+        for (char c : str)
+        f1[c - '0']++;
+
+        int arr[4] = {1, 2, 145, 40585};
+
+        for (int i = 0; i < 4; i++) {
+            string tmp = to_string(arr[i]);
+            if (tmp.size() != str.size()) continue;               
+
+            vector<int> f2(10, 0);
+            for (char c : tmp)
+                f2[c - '0']++;
+
+            if (f1 == f2)
+            return true;
+        }
+        return false;
+    }
+};
