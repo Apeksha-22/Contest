@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int scoreDifference(vector<int>& nums) {
+        int fir = 0, sec = 0;
+        int act = 0;
+
+        for (int i = 0; i < nums.size(); i++) {
+
+            if (nums[i] % 2 == 1)
+                act ^= 1;
+
+            if (i % 6 == 5)
+                act ^= 1;
+
+            if (act == 0)
+                fir += nums[i];
+            else
+                sec += nums[i];
+        }
+
+        return fir - sec;
+    }
+};
