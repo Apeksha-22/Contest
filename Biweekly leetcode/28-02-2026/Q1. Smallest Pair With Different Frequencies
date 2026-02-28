@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> minDistinctFreqPair(vector<int>& nums) {
+        vector<int> freq(101, 0);
+        for (int v : nums)
+            freq[v]++;
+
+        vector<int> val;
+        for (int v = 1; v <= 100; v++)
+            if (freq[v] > 0)
+                val.push_back(v);
+        sort(val.begin(), val.end());
+
+        int m = val.size();
+        for (int i = 0; i < m; ++i) {
+            int x = val[i];
+            for (int j = i + 1; j < m; ++j) {
+                int y = val[j];
+                if (freq[x] != freq[y])
+                    return {x, y};
+            }
+        }
+        return {-1, -1};
+    }
+};©leetcode
