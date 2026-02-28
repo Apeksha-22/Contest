@@ -1,0 +1,21 @@
+class Solution {
+public:
+    string mergeCharacters(string s, int k) {
+        string temp = s;
+        bool ch = true;
+        while (ch) {
+            ch = false;
+            int n = temp.size();
+            for (int i = 0; i < n && !ch; ++i) {
+                for (int j = i + 1; j <= i + k && j < n; ++j) {
+                    if (temp[i] == temp[j]) {
+                        temp.erase(temp.begin() + j);
+                        ch = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+};©leetcode
