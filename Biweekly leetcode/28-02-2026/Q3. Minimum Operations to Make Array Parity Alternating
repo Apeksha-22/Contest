@@ -1,0 +1,123 @@
+class Solution {
+public:
+    vector<int> makeParityAlternating(vector<int>& nums) {
+        vector<int> temp = nums;
+        int n = temp.size();
+        if (n == 1)
+            return {0, 0};
+
+        auto func = [&](int x) -> int {
+            int cnt = 0;
+            for (int i = 0; i < n; ++i) {
+                int p = (i % 2 == 0 ? x : 1 - x);
+                int cur = ((temp[i] & 1) ? 1 : 0);
+                if (cur != p)
+                    ++cnt;
+            }
+            return cnt;
+        };
+
+        int a = func(0);
+        int b = func(1);
+        int mn = min(a, b);
+
+        auto func2 = [&](int x) {
+            vector<char> tmp(n, 0);
+            for (int i = 0; i < n; ++i) {
+                int p = (i % 2 == 0 ? x : 1 - x);
+                int cur = ((temp[i] & 1) ? 1 : 0);
+                if (cur != p)
+                    tmp[i] = 1;
+            }
+            return tmp;
+        };
+
+        auto func3 = [&](const vector<char>& tmp, long long D) -> bool {
+            if (D >= 2) {
+                long long L = LLONG_MIN / 4, R = LLONG_MAX / 4;
+                for (int i = 0; i < n; ++i) {
+                    long long val = temp[i];
+                    if (!tmp[i]) {
+                        long long l = val - D, r = val;
+                        if (l > R || r < L)
+                            return false;
+                        L = max(L, l);
+                        R = min(R, r);
+                    } else {
+                        long long l = val - 1 - D;
+                        long long r = val + 1;
+                        if (l > R || r < L)
+                            return false;
+                        L = max(L, l);
+                        R = min(R, r);
+                    }
+                }
+                return L <= R;
+            } else {
+                unordered_map<long long, int> cnt;
+                cnt.reserve(n * 3);
+                if (D == 0) {
+                    for (int i = 0; i < n; ++i) {
+                        long long val = temp[i];
+                        if (!tmp[i]) {
+                            ++cnt[val];
+                        } else {
+                            ++cnt[val - 1];
+                            ++cnt[val + 1];
+                        }
+                    }
+                    for (auto& pr : cnt)
+                        if (pr.second == n)
+                            return true;
+                    return false;
+                } else {
+                    for (int i = 0; i < n; ++i) {
+                        long long val = temp[i];
+                        if (!tmp[i]) {
+                            ++cnt[val - 1];
+                            ++cnt[val];
+                        } else {
+                            ++cnt[val - 2];
+                            ++cnt[val - 1];
+                            ++cnt[val];
+                            ++cnt[val + 1];
+                        }
+                    }
+                    for (auto& pr : cnt)
+                        if (pr.second == n)
+                            return true;
+                    return false;
+                }
+            }
+        };
+
+        auto fun4 = [&](int x) -> long long {
+            vector<char> tmp = func2(x);
+            long long lo = LLONG_MAX, hi = LLONG_MIN;
+            for (int v : temp) {
+                lo = min(lo, (long long)v);
+                hi = max(hi, (long long)v);
+            }
+            long long m = hi - lo;
+            long long upper = m + 2;
+            long long L = 0, R = upper, ans = upper;
+            while (L <= R) {
+                long long mid = (L + R) >> 1;
+                if (func3(tmp, mid)) {
+                    ans = mid;
+                    R = mid - 1;
+                } else
+                    L = mid + 1;
+            }
+            return ans;
+        };
+
+        long long bs = LLONG_MAX;
+        if (a == mn)
+            bs = min(bs, fun4(0));
+        if (b == mn)
+            bs = min(bs, fun4(1));
+
+        return {mn, (int)bs};
+    }
+};©leetcode
