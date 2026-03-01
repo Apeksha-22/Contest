@@ -1,0 +1,7 @@
+class Solution {
+public:
+    int minCost(int n) {
+        int tem = n;
+        return tem * (tem - 1) / 2;
+    }
+};
