@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int minOperations(string s) {
+        int len = s.size();
+        string cmp = s;
+        
+        sort(cmp.begin(), cmp.end());
+        if (cmp == s) return 0;
+
+        if (len == 2) return -1;
+        
+        int mxx = -1;
+        int mnn = 1000;
+
+        for (auto ch : s) {
+            mxx = max(mxx, (int)ch);
+            mnn = min(mnn, (int)ch);
+        }
+
+        if ((int)s[0] == mxx && (int)s[len - 1] == mnn) {
+            for (int i = 1; i < len - 1; i++) {
+                if ((int)s[i] == mnn || (int)s[i] == mxx)
+                    return 2;
+            }
+            return 3;
+        }
+
+        if ((int)s[0] == mnn || (int)s[len - 1] == mxx)
+            return 1;
+
+        if ((int)s[0] == mxx)
+            return 2;
+
+        if ((int)s[len - 1] == mnn)
+            return 2;
+
+        return 2;
+    }
+};
