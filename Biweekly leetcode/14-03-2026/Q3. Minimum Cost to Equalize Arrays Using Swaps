@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int minCost(vector<int>& nums1, vector<int>& nums2) {
+        auto tem = nums1;
+        int n = nums1.size();
+
+        unordered_map<int, int> cnt1, cnt2, tot;
+
+        for (int x : nums1) {
+            cnt1[x]++;
+            tot[x]++;
+        }
+        for (int x : nums2) {
+            cnt2[x]++;
+            tot[x]++;
+        }
+
+        for (auto& x : tot) {
+            if (x.second % 2)
+                return -1;
+        }
+
+        long long diff = 0;
+        for (auto& x : tot) {
+            diff += abs(cnt1[x.first] - cnt2[x.first]);
+        }
+
+        return diff / 4;
+    }
+};
