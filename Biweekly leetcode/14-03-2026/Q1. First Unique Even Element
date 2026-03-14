@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int firstUniqueEven(vector<int>& nums) {
+        int frq[101] = {0};
+
+        for (int x : nums)
+            frq[x]++;
+
+        for (int x : nums) {
+            if (x % 2 == 0 && frq[x] == 1)
+                return x;
+        }
+
+        return -1;
+    }
+};
