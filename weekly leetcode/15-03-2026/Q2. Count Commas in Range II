@@ -1,0 +1,14 @@
+class Solution {
+public:
+    long long countCommas(long long n) {
+        long long tem = n;
+        long long ans = 0;
+        
+        for(long long i = 1000, j = 1; i <= tem; i *= 1000, j++) {
+            long long r = min(tem, i * 1000 - 1);
+            ans += (r - i + 1) * j;
+        }
+        
+        return ans;
+    }
+};©leetcode
