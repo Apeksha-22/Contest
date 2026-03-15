@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int longestArithmetic(vector<int>& nums) {
+        vector<int> tem = nums;
+        int n = tem.size();
+        if (n <= 2)
+            return n;
+
+        vector<int> L(n, 1), R(n, 1);
+
+        L[0] = 1;
+        if (n > 1)
+            L[1] = 2;
+
+        // left side se arithmetic length calculate
+        for (int i = 2; i < n; ++i) {
+            if ((long long)tem[i] - tem[i - 1] ==
+                (long long)tem[i - 1] - tem[i - 2])
+                L[i] = L[i - 1] + 1;
+            else
+                L[i] = 2;
+        }
+
+        R[n - 1] = 1;
+        if (n > 1)
+            R[n - 2] = 2;
+
+        // right side se bhi same calculation
+        for (int i = n - 3; i >= 0; --i) {
+            if ((long long)tem[i + 1] - tem[i] ==
+                (long long)tem[i + 2] - tem[i + 1])
+                R[i] = R[i + 1] + 1;
+            else
+                R[i] = 2;
+        }
+
+        int ans = 2;
+
+        for (int i = 0; i < n; ++i)
+            ans = max(ans, L[i]);
+
+        ans = max(ans, 1 + R[1]);     // first element replace karne ka case
+        ans = max(ans, L[n - 2] + 1); // last element replace karne ka case
+
+        for (int i = 1; i <= n - 2; ++i) {
+
+            // check karo ki middle element change karke dono sides connect ho
+            // sakte hain ya nahi
+            long long sum = (long long)tem[i - 1] + (long long)tem[i + 1];
+
+            if (sum % 2 == 0) {
+                long long d = (tem[i + 1] - tem[i - 1]) / 2;
+
+                int left = L[i - 1];
+                if (i - 1 >= 1 && (long long)tem[i - 1] - tem[i - 2] != d)
+                    left = 1;
+
+                int right = R[i + 1];
+                if (i + 2 <= n - 1 && (long long)tem[i + 2] - tem[i + 1] != d)
+                    right = 1;
+
+                ans = max(ans, left + 1 + right);
+            }
+
+            ans = max(ans, L[i - 1] + 1);
+            ans = max(ans, R[i + 1] + 1);
+        }
+
+        if (ans > n)
+            ans = n;
+        return ans;
+    }
+};
