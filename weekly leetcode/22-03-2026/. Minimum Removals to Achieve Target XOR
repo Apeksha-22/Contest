@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int minRemovals(vector<int>& nums, int target) {
+        int n = nums.size();
+        int mid = n / 2;
+
+        vector<int> left(nums.begin(), nums.begin() + mid);
+        vector<int> right(nums.begin() + mid, nums.end());
+
+        unordered_map<int,int> L, R;
+
+        int lsz = left.size();
+        for(int i = 0; i < (1 << lsz); i++){
+            int xr = 0, cnt = 0;
+            for(int j = 0; j < lsz; j++){
+                if(i & (1 << j)){
+                    xr ^= left[j];
+                    cnt++;
+                }
+            }
+            L[xr] = max(L[xr], cnt);
+        }
+
+        int rsz = right.size();
+        for(int i = 0; i < (1 << rsz); i++){
+            int xr = 0, cnt = 0;
+            for(int j = 0; j < rsz; j++){
+                if(i & (1 << j)){
+                    xr ^= right[j];
+                    cnt++;
+                }
+            }
+            R[xr] = max(R[xr], cnt);
+        }
+
+        int bst = -1;
+
+        for(auto &p : L){
+            int x = p.first;
+            int ned = target ^ x;
+            if(R.count(ned)){
+                bst = max(bst, p.second + R[ned]);
+            }
+        }
+
+        if(bst == -1) return -1;
+        return n - bst;
+    }
+};
