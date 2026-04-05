@@ -1,0 +1,25 @@
+class Solution {
+public:
+    long long minIncrease(vector<int>& nums) {
+        int n = nums.size();
+
+        auto bt = [&](pair<int, long long> a, pair<int, long long> b) {
+            if (a.first != b.first)
+                return a.first > b.first ? a : b;
+            return a.second < b.second ? a : b;
+        };
+
+        pair<int, long long> a = {0, 0}, b = {-1, (long long)4e18};
+
+        for (int i = 1; i < n - 1; i++) {
+            long long t = max(nums[i - 1], nums[i + 1]) + 1LL;
+            long long c = max(0LL, t - nums[i]);
+            pair<int, long long> p = {a.first + 1, a.second + c};
+            auto n0 = bt(a, b);
+            a = n0;
+            b = p;
+        }
+
+        return bt(a, b).second;
+    }
+};
