@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> findGoodIntegers(int n) {
+        unordered_map<int,int> mp;
+        int lim = cbrt(n) + 1;
+
+        for (int a = 1; a <= lim; a++) {
+            long long x = 1LL*a*a*a;
+            for (int b = a; b <= lim; b++) {
+                long long y = 1LL*b*b*b;
+                long long s = x + y;
+                if (s > n) break;
+                mp[s]++;
+            }
+        }
+
+        vector<int> res;
+        for (auto &p : mp) {
+            if (p.second >= 2) res.push_back(p.first);
+        }
+
+        sort(res.begin(), res.end());
+        return res;
+    }
+};
