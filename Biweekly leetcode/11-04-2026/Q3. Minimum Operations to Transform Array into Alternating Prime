@@ -1,0 +1,28 @@
+class Solution {
+public:
+    bool isp(int x){
+        if(x < 2) return false;
+        for(int i=2; i*i<=x; i++){
+            if(x%i == 0) return false;
+        }
+        return true;
+    }
+    int minOperations(vector<int>& nums) {
+        vector<int>temp = nums;
+        int n=temp.size();
+        int ans=0;
+
+        for(int i=0; i<n; i++){
+            int x = temp[i];
+            int curr = x;
+
+            if(i%2 == 0)
+                while(!isp(curr)) curr++;
+            else
+                while(isp(curr)) curr++;
+
+            ans += (curr-x);
+        }
+        return ans;
+    }
+};
