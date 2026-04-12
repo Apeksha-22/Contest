@@ -1,0 +1,53 @@
+class Solution {
+public:
+    int longestBalanced(string s) {
+        string temp = s;
+        int n = temp.size(), z = 0, o = 0;
+
+        for (char c : temp) {
+            if (c == '0') z++;
+            else o++;
+        }
+
+        vector<int> pre(n + 1, 0);
+        vector<vector<int>> pos(2 * n + 1);
+        pos[n].push_back(0);
+
+        for (int i = 1; i <= n; i++) {
+            pre[i] = pre[i - 1] + (temp[i - 1] == '1' ? 1 : -1);
+            pos[pre[i] + n].push_back(i);
+        }
+
+        int ans = 0;
+        vector<int> fst(2 * n + 1, -1);
+
+        for (int i = 0; i <= n; i++) {
+            int id = pre[i] + n;
+            if (fst[id] == -1) fst[id] = i;
+            else ans = max(ans, i - fst[id]);
+        }
+
+        auto get = [&](int t, int cap) {
+            if (cap < 2) return 0;
+            int bst = 0;
+
+            for (int r = 0; r <= n; r++) {
+                int need = pre[r] - t;
+                if (need < -n || need > n) continue;
+
+                auto& v = pos[need + n];
+                int st = max(0, r - cap);
+                auto it = lower_bound(v.begin(), v.end(), st);
+
+                if (it != v.end() && *it < r)
+                    bst = max(bst, r - *it);
+            }
+            return bst;
+        };
+
+        ans = max(ans, get(2, 2 * z));
+        ans = max(ans, get(-2, 2 * o));
+
+        return ans;
+    }
+};
